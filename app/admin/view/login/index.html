@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>后台登录</title>
+		<link rel="stylesheet" type="text/css" href="/static/admin/layui/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/login.css" />
+		<link rel="stylesheet" type="text/css" href="/static/admin/verify-master/css/verify.css">
+		<script src="/static/admin/js/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/static/admin/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="/static/admin/verify-master/js/verify.js" ></script>
+	</head>
+
+	<body>
+		<div class="m-login-bg">
+			<div class="m-login">
+				<h3>后台系统登录</h3>
+				<div class="m-login-warp">
+					<form class="layui-form" onsubmit="return false">
+						<div class="layui-form-item">
+							<input type="text" id="username" name="username" lay-verify="required" placeholder="用户名" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-item">
+							<input type="text" id="password" name="password" lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-item">
+							<!-- 滑动验证 -->
+							<div id="mpanel1" >
+    						</div>
+						</div>
+						<div class="layui-form-item m-login-btn" style="text-align: center;">
+							<div class="layui-inline">
+								<button class="layui-btn layui-btn-normal" id="login" lay-submit lay-filter="login">登录</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<p class="copyright">Copyright 2015-2016 by XIAODU</p>
+			</div>
+		</div>
+		<script src="/static/admin/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+		$(document).ready(function(){
+			var verify = 0
+			$("#login").click(function () { 
+				var username = $("#username").val();
+				var password = $("#password").val();
+				if (password!="" && username!="") {
+					if (verify == 1) {
+						$.ajax({
+						    url: "{:url('Login/dologin')}",
+						    type: 'post',
+						    data: {'username':username, 'password':password},
+						    dataType: 'json',
+						    success: function (res) {
+						    	var res = JSON.parse(res);
+						    	if (res.status) {
+									layer.msg(res.msg, {
+									    time: 1000 
+									}, function () {
+									    window.location.href = "{:url('index/index')}";
+									});
+						    	} else {
+									layer.msg(res.msg, {
+									    time: 1000 
+									}, function () {
+									    window.location.reload();
+									});
+						    	}
+						    }
+						})
+					} else {
+						layer.msg("请向右滑动完成验证后登录", {time: 1000});
+					}
+				} else {
+					layer.msg("请填写用户名或密码！", {time: 1000});
+				}
+			})
+
+			// 滑动验证
+			$('#mpanel1').slideVerify({
+	    		type : 1,		//类型
+	    		vOffset : 5,	//误差量，根据需求自行调整
+		        barSize : {
+		        	width : '100%',
+		        	height : '40px',
+		        },
+		        ready : function() {
+		    	},
+		        success : function() {
+		        	verify = 1
+		        },
+		        error : function() {
+
+		        }
+		        
+		    });
+		})
+		
+		</script>
+	</body>
+
+</html>
