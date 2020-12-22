@@ -5,6 +5,9 @@ namespace app\admin\controller;
 
 use think\facade\View;
 
+use app\admin\model\types;
+use app\admin\model\demo as demo_model;
+
 class Demo extends BaseController
 {
 	
@@ -14,8 +17,16 @@ class Demo extends BaseController
     }
 
      public function add()
+    {	
+    	$types_model = new types();
+    	$types_list = $types_model->select();
+
+        return View::fetch('add', array("types_list"=>$types_list));
+    }
+
+    public function doInsert() 
     {
-        return View::fetch('add');
+    	var_dump($_POST);
     }
 
     
